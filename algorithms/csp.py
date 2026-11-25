@@ -60,9 +60,23 @@ def backtracking_search(csp, domains=None, select_variable=None,
                 trace.restore(parent, snapshot(parent), variable)
         return result
 
-    # TODO: Add your code here
-    raise NotImplementedError
-    # FIN DEL BLOQUE DEL ESTUDIANTE
+    def expand(assignment):
+        if len(assignment) == len(csp.variables):
+            return assignment
+
+        tarea = choose(csp, assignment, domains)
+
+        for franja in ordered(csp, tarea, assignment, domains):
+            if consistent(tarea, franja, assignment):
+                nueva_asignacion = assignment.copy()
+                nueva_asignacion[tarea] = franja
+
+                resultado = search(nueva_asignacion)
+
+                if resultado is not None:
+                    return resultado
+
+        return None
 
     return search({})
 
