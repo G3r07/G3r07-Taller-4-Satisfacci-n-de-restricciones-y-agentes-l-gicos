@@ -152,9 +152,29 @@ def select_unassigned_variable(csp, assignment, domains):
     - csp.neighbors[x] contiene sus vecinos; csp.variables conserva el orden
       original para los desempates.
     """
-    # TODO: Add your code here
-    raise NotImplementedError
-    # FIN DEL BLOQUE DEL ESTUDIANTE
+    mejor_variable = None
+    mejor_mrv = float('inf')
+    mejor_grado = -1
+
+    for variable in csp.variables:
+        if variable not in assignment:
+            mrv = 0
+            grado = 0
+
+            for valor in domains[variable]:
+                if csp.consistent(variable, valor, assignment):
+                    mrv += 1
+
+            for vecino in csp.neighbors[variable]:
+                if vecino not in assignment:
+                    grado += 1
+
+            if mrv < mejor_mrv or (mrv == mejor_mrv and grado > mejor_grado):
+                mejor_variable = variable
+                mejor_mrv = mrv
+                mejor_grado = grado
+
+    return mejor_variable
 
 
 def order_domain_values(csp, variable, assignment, domains):
@@ -170,6 +190,22 @@ def order_domain_values(csp, variable, assignment, domains):
     - csp.compatible(variable, valor, vecino, valor_vecino) comprueba cada par
       sin modificar los dominios.
     """
-    # TODO: Add your code here
-    raise NotImplementedError
-    # FIN DEL BLOQUE DEL ESTUDIANTE
+    candidatos = []
+
+    for valor in domains[variable]:
+        if csp.consistent(variable, valor, assignment):
+            candidatos.append(valor)
+
+    def valores_descartados(valor):
+        descartados = 0
+
+        for vecino in csp.neighbors[variable]:
+            if vecino not in assignment:
+                for valor_vecino in domains[vecino]:
+                    if csp.consistent(vecino, valor_vecino, assignment):
+                        if not csp.compatible(variable, valor, vecino, valor_vecino):
+                            descartados += 1
+
+        return descartados
+
+    return sorted(candidatos, key=valores_descartados)
