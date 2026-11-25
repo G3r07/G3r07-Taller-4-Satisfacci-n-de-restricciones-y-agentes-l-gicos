@@ -92,9 +92,22 @@ def revise(csp, x, y, domains):
       entre ese par de tareas, respetando la dirección de las precedencias.
     - Si elimina elementos mientras recorre una lista, itere sobre una copia.
     """
-    # TODO: Add your code here
-    raise NotImplementedError
-    # FIN DEL BLOQUE DEL ESTUDIANTE
+    
+    modificado = False
+
+    for valor_x in domains[x].copy():
+        tiene_soporte = False
+
+        for valor_y in domains[y]:
+            if csp.compatible(x, valor_x, y, valor_y):
+                tiene_soporte = True
+                break
+
+        if not tiene_soporte:
+            domains[x].remove(valor_x)
+            modificado = True
+
+    return modificado
 
 
 def ac3(csp, domains):
@@ -107,9 +120,27 @@ def ac3(csp, domains):
       csp.neighbors[x] contiene los vecinos de x.
     - revise(csp, x, y, domains) retorna si modificó domains[x].
     """
-    # TODO: Add your code here
-    raise NotImplementedError
-    # FIN DEL BLOQUE DEL ESTUDIANTE
+    queue = deque()
+
+    for x in csp.variables:
+        if not domains[x]:
+            return False
+
+        for y in csp.neighbors[x]:
+            queue.append((x, y))
+
+    while queue:
+        x, y = queue.popleft()
+
+        if revise(csp, x, y, domains):
+            if not domains[x]:
+                return False
+
+            for z in csp.neighbors[x]:
+                if z != y:
+                    queue.append((z, x))
+
+    return True
 
 
 def select_unassigned_variable(csp, assignment, domains):
