@@ -1,5 +1,10 @@
 # Observatorio Seguro
 
+## Integrantes
+- Esteban Lizarazo Hernández - 202515803 
+- Manuel Mejía Arana - 202423975 
+- Gerardo Rocha Linares -202513388
+
 Requiere Python 3.11 o superior. Desde esta carpeta:
 
 ```bash
